@@ -32,3 +32,17 @@
            res# (try ~x (catch Exception e# (do (reset! err# e#) nil)))
            form# '~x]
        (check res# form# (used-bindings ~bindings form#) @err#))))
+
+(defn verify-every [pred coll]
+  (let [outcoll (map (fn [x] [x (pred x)]) coll)
+        passed? #(identity (second %))]
+
+    (when-not (every? passed?  outcoll)
+      (let [;fails (filter (complement passed?) outcoll )
+            sep (System/getProperty "line.separator")
+            msg (apply str "Verification failed: "
+                       (pr-str pred) sep
+                       (for [[k v] outcoll]
+                         (str "\t" k " : " (pr-str v) sep)))
+            e (AssertionError. msg)]
+        (throw e)))))
