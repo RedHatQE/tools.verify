@@ -33,7 +33,7 @@
            form# '~x]
        (check res# form# (used-bindings ~bindings form#) @err#))))
 
-(def verify verify-that)
+(defmacro verify [x] `(verify-that ~x))
 
 (defn verify-every [pred coll]
   (let [outcoll (map (fn [x] [x (pred x)]) coll)
